@@ -19,12 +19,21 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//open route
 Route::post('/register',[\App\Http\Controllers\AuthController::class,'register']);
 Route::post('/login',[\App\Http\Controllers\AuthController::class,'login']);
-
-
 Route::get('/redirect/google', [\App\Http\Controllers\AuthController::class,'googleOauth']);
 Route::get('/google/auth', [\App\Http\Controllers\AuthController::class,'googleOauthInfo']);
-
 Route::get('/google/user', [\App\Http\Controllers\AuthController::class,'googleUser']);
+
+//protect route
+Route::middleware('auth:sanctum')->group(function (){
+    Route::post('/change-password',[\App\Http\Controllers\AuthController::class,'changePassword'])
+        ->middleware(['userNotFromGoogle']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+});
+
+
 

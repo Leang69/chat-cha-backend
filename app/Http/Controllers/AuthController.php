@@ -94,8 +94,7 @@ class AuthController extends Controller
         return Socialite::driver('google')->stateless()->redirect();
     }
 
-    function googleOauthInfo()
-    {
+    function googleOauthInfo(){
         $googleUser = Socialite::driver('google')->stateless()->user();
         $user = User::firstOrCreate(
             ["email" => $googleUser->email],
@@ -104,13 +103,30 @@ class AuthController extends Controller
                 "password" => bcrypt(Str::random(10)),
                 "userFrom" => "google",
                 "profile" => $googleUser->avatar,
-                "email_verified_at" => now()->timestamp
             ]
         );
+        if (!$user->email_verified_at){
+            $user->markEmailAsVerified();
+        }
         return response()->json([
                 "token" => $user->createToken('token')->plainTextToken,
                 "message" => 'success',
                 'email_verified_at' => $user->email_verified_at
             ], 400);
     }
+
+    function changePassword(Request $request){
+        if (Hash::check($request->password, $request->user()->password)){
+            if (Hash::check($request->newPassword, $request->user()->password)){
+                return response()->json(["massage"=>"new password and old password are the same"],406);
+            }
+            $request->user()->password = bcrypt($request->newPassword);
+            $request->user()->save();
+            return response()->json(["massage"=>"success"],400);
+        }else{
+            return response()->json(["massage"=>"wrong password"],406);
+        }
+    }
+
+
 }
