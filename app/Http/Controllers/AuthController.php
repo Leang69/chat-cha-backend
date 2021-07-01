@@ -51,7 +51,7 @@ class AuthController extends Controller
                 "token" => $user->createToken('token')->plainTextToken,
                 "message" => 'success',
                 'email_verified_at' => $user->email_verified_at
-            ], 400);        }
+            ], 200);        }
     }
 
     function login(Request $request)
@@ -85,7 +85,7 @@ class AuthController extends Controller
                     "token" => $user->createToken('token')->plainTextToken,
                     "message" => 'success',
                     'email_verified_at' => $user->email_verified_at
-                ], 400);
+                ], 200);
             }
         }
     }
@@ -112,7 +112,7 @@ class AuthController extends Controller
                 "token" => $user->createToken('token')->plainTextToken,
                 "message" => 'success',
                 'email_verified_at' => $user->email_verified_at
-            ], 400);
+            ], 200);
     }
 
     function changePassword(Request $request){
@@ -122,11 +122,14 @@ class AuthController extends Controller
             }
             $request->user()->password = bcrypt($request->newPassword);
             $request->user()->save();
-            return response()->json(["massage"=>"success"],400);
+            return response()->json(["massage"=>"success"],200);
         }else{
             return response()->json(["massage"=>"wrong password"],406);
         }
     }
 
+    function user(Request $request) {
+        return $request->user();
+    }
 
 }

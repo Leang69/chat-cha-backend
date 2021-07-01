@@ -30,9 +30,10 @@ Route::get('/google/user', [\App\Http\Controllers\AuthController::class,'googleU
 Route::middleware('auth:sanctum')->group(function (){
     Route::post('/change-password',[\App\Http\Controllers\AuthController::class,'changePassword'])
         ->middleware(['userNotFromGoogle']);
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/user', [\App\Http\Controllers\AuthController::class,'user']);
+
+    Route::post('/send-massage',[\App\Http\Controllers\MessageController::class,'sendMassage']);
+    Route::post('/get-massage',[\App\Http\Controllers\MessageController::class,'getMassage']);
 });
 
 

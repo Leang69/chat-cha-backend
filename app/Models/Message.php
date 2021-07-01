@@ -9,5 +9,15 @@ class Message extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'content',
+        'from_user_id',
+        'to_user_id'
+    ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'id'
+    ];
 }

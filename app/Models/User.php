@@ -12,16 +12,6 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    public function message_send()
-    {
-        return $this->hasMany(Message::class, 'from_user_id');
-    }
-
-    public function message_receive()
-    {
-        return $this->hasMany(Message::class, 'to_user_id');
-    }
-
     /**
      * The attributes that are mass assignable.
      *
@@ -54,4 +44,14 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function message_send()
+    {
+        return $this->hasMany(Message::class, 'from_user_id');
+    }
+
+    public function message_receive()
+    {
+        return $this->hasMany(Message::class, 'to_user_id');
+    }
 }
