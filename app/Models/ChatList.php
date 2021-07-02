@@ -9,6 +9,10 @@ class ChatList extends Model
 {
     use HasFactory;
 
+    public function lassMassage(){
+        return $this->hasOne(Message::class,'id','message_id');
+    }
+
     protected $fillable = [
         'last_message',
         'user_id',

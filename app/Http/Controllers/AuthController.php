@@ -46,7 +46,7 @@ class AuthController extends Controller
             $user->userFrom = "chat cha";
             $user->email_verified_at = null;
             $user->save();
-            $user['token'] = $user->createToken('token')->plainTextToken;
+            $user->sendEmailVerificationNotification();
             return response()->json([
                 "token" => $user->createToken('token')->plainTextToken,
                 "message" => 'success',
@@ -90,6 +90,11 @@ class AuthController extends Controller
         }
     }
 
+    function logout(Request $request){
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => "success"]);
+    }
+
     function googleOauth(){
         return Socialite::driver('google')->stateless()->redirect();
     }
@@ -127,6 +132,7 @@ class AuthController extends Controller
             return response()->json(["massage"=>"wrong password"],406);
         }
     }
+
 
     function user(Request $request) {
         return $request->user();

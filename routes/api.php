@@ -15,25 +15,32 @@ use Laravel\Socialite\Facades\Socialite;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 //open route
-Route::post('/register',[\App\Http\Controllers\AuthController::class,'register']);
-Route::post('/login',[\App\Http\Controllers\AuthController::class,'login']);
-Route::get('/redirect/google', [\App\Http\Controllers\AuthController::class,'googleOauth']);
-Route::get('/google/auth', [\App\Http\Controllers\AuthController::class,'googleOauthInfo']);
-Route::get('/google/user', [\App\Http\Controllers\AuthController::class,'googleUser']);
+Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register']);
+Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login']);
+Route::get('/redirect/google', [\App\Http\Controllers\AuthController::class, 'googleOauth']);
+Route::get('/google/auth', [\App\Http\Controllers\AuthController::class, 'googleOauthInfo']);
+
+Route::get('/email/verification-handler/{id}/{hash}', [\App\Http\Controllers\EmailVerificationController::class, 'userVerificationHandler'])
+    ->middleware('signed')->name('verification.verify');
+
 
 //protect route
-Route::middleware('auth:sanctum')->group(function (){
-    Route::post('/change-password',[\App\Http\Controllers\AuthController::class,'changePassword'])
-        ->middleware(['userNotFromGoogle']);
-    Route::get('/user', [\App\Http\Controllers\AuthController::class,'user']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [\App\Http\Controllers\AuthController::class, 'user']);
+    Route::get('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
 
-    Route::post('/send-massage',[\App\Http\Controllers\MessageController::class,'sendMassage']);
-    Route::post('/get-massage',[\App\Http\Controllers\MessageController::class,'getMassage']);
+    //route for user not use google credential
+    Route::post('/change-password', [\App\Http\Controllers\AuthController::class, 'changePassword'])
+        ->middleware('userNotFromGoogle');
+
+
+    Route::get('/email/resend-verify', [\App\Http\Controllers\EmailVerificationController::class, 'resendVerify'])
+        ->middleware('userNotFromGoogle')->name('verification.send');
+
+    Route::post('/send-massage', [\App\Http\Controllers\MessageController::class, 'sendMassage']);
+    Route::post('/get-massage', [\App\Http\Controllers\MessageController::class, 'getMassage']);
+    Route::post('/get-massage-history', [\App\Http\Controllers\ChatListController::class, 'lassMassage']);
 });
 
 

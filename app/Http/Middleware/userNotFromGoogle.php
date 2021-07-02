@@ -18,7 +18,7 @@ class userNotFromGoogle
     public function handle(Request $request, Closure $next)
     {
         if (Str::contains($request->user()->userFrom,'google')){
-            return response()->json(['message'=>'this account create with google so we can not change password']);
+            return response()->json(['message'=>'this account not allow to use this']);
         }
         return $next($request);
     }

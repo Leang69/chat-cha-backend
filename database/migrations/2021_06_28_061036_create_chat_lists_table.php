@@ -15,7 +15,7 @@ class CreateChatListsTable extends Migration
     {
         Schema::create('chat_lists', function (Blueprint $table) {
             $table->id();
-            $table->string('last_message');
+            $table->integer('message_id');
             $table->integer('user_id');
             $table->integer('with_user_id');
             $table->timestamps();
