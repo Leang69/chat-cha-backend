@@ -34,12 +34,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/change-password', [\App\Http\Controllers\AuthController::class, 'changePassword'])
         ->middleware('userNotFromGoogle');
 
-
     Route::get('/email/resend-verify', [\App\Http\Controllers\EmailVerificationController::class, 'resendVerify'])
         ->middleware('userNotFromGoogle')->name('verification.send');
 
     Route::post('/send-massage', [\App\Http\Controllers\MessageController::class, 'sendMassage']);
     Route::post('/get-massage', [\App\Http\Controllers\MessageController::class, 'getMassage']);
+    Route::post('/get-massage-between-us', [\App\Http\Controllers\MessageController::class, 'getLastMessage']);
     Route::post('/get-massage-history', [\App\Http\Controllers\ChatListController::class, 'lassMassage']);
 });
 

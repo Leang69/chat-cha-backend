@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SendNewMessage;
 use App\Models\ChatList;
 use App\Models\Message;
 use App\Models\User;
@@ -36,7 +37,8 @@ class MessageController extends Controller
         );
         $lastMessageBA->message_id = $message->id;
         $lastMessageBA->save();
-
+        
+        SendNewMessage::dispatch($request->user()->id, $request->to_user_id, $request->content_massage);
         return response()->json(['message' => 'success']);
     }
 
@@ -54,5 +56,11 @@ class MessageController extends Controller
 
         return response()->json(['message' => $youNmeAllChat]);
     }
+
+    function getLastMessage(Request $request){
+        $Listmessage = ChatList::where('user_id',$request->user()->id)->first();
+        return response()->json(['message' => $Listmessage->lassMassage]);
+    }
+    
 }
 

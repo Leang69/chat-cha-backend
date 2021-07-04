@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\VerifyEmailSuccess;
 use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -26,6 +27,8 @@ class EmailVerificationController extends Controller
         }
 
         $user->markEmailAsVerified();
+        VerifyEmailSuccess::dispatch($user);
         return response()->json(['message' => 'success']);
     }
+
 }
