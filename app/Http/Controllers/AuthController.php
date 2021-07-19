@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Events\GoogleAcclogin;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -15,6 +15,7 @@ class AuthController extends Controller
 
     function register(Request $request)
     {
+
         $validation = array(
             'username' => 'required|string|max:55',
             'email' => 'required|email|unique:users',
@@ -37,7 +38,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors(),
-            ], 406);
+            ], 200);
         } else {
             $user = new User;
             $user->username = $request->username;
@@ -50,8 +51,9 @@ class AuthController extends Controller
             return response()->json([
                 "token" => $user->createToken('token')->plainTextToken,
                 "message" => 'success',
-                'email_verified_at' => $user->email_verified_at
+                'isVerify' => false
             ], 200);        }
+       
     }
 
     function login(Request $request)
@@ -73,13 +75,13 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors(),
-            ], 406);
+            ], 200);
         } else {
             $user = User::firstWhere('email', $request->email);
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return response()->json([
                     'message' => 'email or password is incorrected.'
-                ], 406);
+                ], 200);
             } else {
                 return response()->json([
                     "token" => $user->createToken('token')->plainTextToken,
@@ -96,10 +98,10 @@ class AuthController extends Controller
     }
 
     function googleOauth(){
-        return Socialite::driver('google')->stateless()->redirect();
+        return response()->json(["url" =>  Socialite::driver('google')->stateless()->redirect()->getTargetUrl()]);
     }
 
-    function googleOauthInfo(){
+    function googleOauthInfo(Request $request){
         $googleUser = Socialite::driver('google')->stateless()->user();
         $user = User::firstOrCreate(
             ["email" => $googleUser->email],
@@ -113,13 +115,13 @@ class AuthController extends Controller
         if (!$user->email_verified_at){
             $user->markEmailAsVerified();
         }
-        return response()->json([
-                "token" => $user->createToken('token')->plainTextToken,
-                "message" => 'success',
-                'email_verified_at' => $user->email_verified_at
-            ], 200);
+        $token = $user->createToken('token')->plainTextToken;
+        GoogleAcclogin::dispatch($token);
+        $url = "http://localhost:3000/oauth/";
+        $url .= $token;
+        return redirect()->away($url);
     }
-
+    
     function changePassword(Request $request){
         if (Hash::check($request->password, $request->user()->password)){
             if (Hash::check($request->newPassword, $request->user()->password)){

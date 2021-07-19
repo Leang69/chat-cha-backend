@@ -34,6 +34,6 @@ class VerifyEmailSuccess implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('verifyEmail');
+        return new PrivateChannel('ChatChaVerifyEmail');
     }
 }

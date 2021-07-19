@@ -29,6 +29,9 @@ Route::get('/email/verification-handler/{id}/{hash}', [\App\Http\Controllers\Ema
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [\App\Http\Controllers\AuthController::class, 'user']);
     Route::get('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
+    Route::get('/check-token', function(){
+        return response()->json(["valid" => true]);
+    });
 
     //route for user not use google credential
     Route::post('/change-password', [\App\Http\Controllers\AuthController::class, 'changePassword'])
