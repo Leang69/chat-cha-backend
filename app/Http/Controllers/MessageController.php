@@ -46,7 +46,7 @@ class MessageController extends Controller
         $you = $request->with_user_id;
 
         if ($you == $request->user()->id){
-            return response()->json(['message' => 'chat to yourseft'],406);
+            return response()->json(['message' => 'chat to yourseft']);
         }
 
         $me2you = $request->user()->message_send->where('to_user_id',$you);
@@ -54,7 +54,12 @@ class MessageController extends Controller
 
         $youNmeAllChat = $me2you->merge($you2me)->sortBy('created_at')->values();
 
-        return response()->json(['message' => $youNmeAllChat]);
+        if($youNmeAllChat->count() != 0){
+            return response()->json(['message' => $youNmeAllChat]);
+        }else{
+            return response()->json(['message' => "no message"]);
+        }
+        
     }
 
     function getLastMessage(Request $request){
