@@ -43,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/send-massage', [\App\Http\Controllers\MessageController::class, 'sendMassage']);
     Route::post('/get-massage', [\App\Http\Controllers\MessageController::class, 'getMassage']);
     Route::post('/get-massage-between-us', [\App\Http\Controllers\MessageController::class, 'getLastMessage']);
-    Route::post('/get-massage-history', [\App\Http\Controllers\ChatListController::class, 'lassMassage']);
+    Route::get('/get-massage-history', [\App\Http\Controllers\ChatListController::class, 'lassMassage']);
 });
 
 
