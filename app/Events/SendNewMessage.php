@@ -15,7 +15,7 @@ class SendNewMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
+    public $receiver;
 
 
     /**
@@ -23,9 +23,9 @@ class SendNewMessage implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($sender,$receiver, $message)
+    public function __construct($receiver)
     {
-        //
+        $this->receiver = $receiver;
     }
 
     /**
@@ -35,6 +35,7 @@ class SendNewMessage implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('ChatChaMessage');
+        return new PrivateChannel('messageSession.' . $this->receiver);
     }
+
 }

@@ -12,6 +12,10 @@ class ChatList extends Model
     public function lassMassage(){
         return $this->hasOne(Message::class,'id','message_id');
     }
+
+    public function withUserInfo() {
+        return $this->hasOne(User::class,'id','with_user_id');
+    }
     
 
     protected $fillable = [

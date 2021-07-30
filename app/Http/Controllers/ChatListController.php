@@ -15,8 +15,8 @@ class ChatListController extends Controller
             $message = $item->lassMassage;
             return [
                 "content" => $message->content,
-                "sender" => $message->senderInfo->only(['id', 'username']),
-                "receiver" => $message->receiverInfo->only(['id', 'username'])
+                "withUser" => $item->withUserInfo->only(['id', 'username']),
+                "sender" => $message->senderInfo->only(['id', 'username'])
             ];
         });
 

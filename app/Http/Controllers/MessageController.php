@@ -38,8 +38,8 @@ class MessageController extends Controller
         $lastMessageBA->message_id = $message->id;
         $lastMessageBA->save();
         
-        SendNewMessage::dispatch($request->user()->id, $request->to_user_id, $request->content_massage);
-        return response()->json(['message' => 'success']);
+        SendNewMessage::dispatch($request->to_user_id);
+        return response()->json(['message' => 'success','message_id' =>  $message->id]);
     }
 
     function getMassage(Request $request){
